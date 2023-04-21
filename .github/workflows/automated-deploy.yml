@@ -1,0 +1,35 @@
+name: Automated Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Extract package version
+        id: package_version
+        uses:
+          actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const package = require('./package.json')
+            return package.version
+      
+      - name: Print package version
+        run: echo ${{ steps.package_version.outputs.result }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ steps.package_version.outputs.result }}
+          release_name: Release v${{ steps.package_version.outputs.result }}
+          draft: false
+          prerelease: false
