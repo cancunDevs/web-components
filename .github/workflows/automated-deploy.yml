@@ -18,7 +18,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const package = require('./package.json')
-            return package.version
+            return package.version.substring(1, package.version.length - 1)
       
       - name: Print package version
         run: echo ${{ steps.package_version.outputs.result }}
