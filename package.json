@@ -1,9 +1,9 @@
 {
-  "name": "@imjpfeliciano/react-components-lib",
-  "version": "0.1.3-alpha.17",
+  "name": "@cancundevs/web-components",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/imjpfeliciano/react-components-lib"
+    "url": "https://github.com/cancunDevs/web-components"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
