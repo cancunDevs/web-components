@@ -13,7 +13,7 @@ jobs:
       - name: Extract package version
         id: package_version
         uses:
-          actions/github-script@v5
+          actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -31,8 +31,10 @@ jobs:
         with:
           tag_name: ${{ steps.package_version.outputs.result }}
           release_name: Release ${{ steps.package_version.outputs.result }}
+
           draft: false
-          prerelease: false
+          # If version contains alpha or beta, mark as prerelease
+          prerelease: ${{ contains(steps.package_version.outputs.result, 'alpha') || contains(steps.package_version.outputs.result, 'beta') }}
 
       - name: Publish package to GitHub Packages (Automated)
         uses: actions/setup-node@v3
