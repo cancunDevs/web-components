@@ -18,7 +18,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const package = require('./package.json')
-            return package.version.substring(1, package.version.length - 1)
+            return package.version
       
       - name: Print package version
         run: echo ${{ steps.package_version.outputs.result }}
@@ -29,7 +29,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ steps.package_version.outputs.result }}
-          release_name: Release v${{ steps.package_version.outputs.result }}
+          tag_name: ${{ steps.package_version.outputs.result }}
+          release_name: Release ${{ steps.package_version.outputs.result }}
           draft: false
           prerelease: false
+
+      - name: Publish package to GitHub Packages (Automated)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@octocat'
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
